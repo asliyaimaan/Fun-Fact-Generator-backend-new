@@ -10,7 +10,7 @@ const PORT = 3000;
 // ✅ Define allowed origins
 const allowedOrigins = [
   'https://funfactgenerator123.netlify.app',
-  'https://funfacts-generator-backend-cors.onrender.com'
+  'https://cardgenerator123.netlify.app/'
 ];
 
 // ✅ CORS configuration
@@ -103,3 +103,4 @@ app.get('/funfact', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
+
