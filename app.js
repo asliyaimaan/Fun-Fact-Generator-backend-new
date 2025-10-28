@@ -8,8 +8,6 @@ const PORT = 3000;
 
 // ✅ Define allowed origins
 const cors = require('cors');
-const express = require('express');
-
 
 // ✅ Allow only these URLs
 const allowedOrigins = [
@@ -100,6 +98,7 @@ app.get('/funfact', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
+
 
 
 
