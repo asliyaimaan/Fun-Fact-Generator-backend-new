@@ -3,28 +3,25 @@ require('dotenv').config(); //Load API key from .env
 const express = require('express');
 const axios = require('axios');
 const path = require('path');
-const cors = require('cors'); // <-- Add this line
 const app = express();
 const PORT = 3000;
 
 // ✅ Define allowed origins
+const cors = require('cors');
+const express = require('express');
+
+
+// ✅ Allow only these URLs
 const allowedOrigins = [
   'https://funfactgenerator123.netlify.app',
-  'https://cardgenerator123.netlify.app/'
+  'https://cardgenerator123.netlify.app'
 ];
 
-// ✅ CORS configuration
+// ✅ Simple CORS setup
 app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    } else {
-      return callback(new Error('Not allowed by CORS'));
-    }
-  }
+  origin: allowedOrigins
 }));
+
 
 // ✅ Serve static frontend files from "public" folder
 app.use(express.static(path.join(__dirname, 'public')));
@@ -103,4 +100,6 @@ app.get('/funfact', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
+
+
 
