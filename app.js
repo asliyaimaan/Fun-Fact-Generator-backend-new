@@ -17,7 +17,7 @@ const allowedOrigins = [
 
 // ✅ Simple CORS setup
 app.use(cors({
-  origin: allowedOrigins
+  origin: allowedOrigins, methods: ['GET', 'POST']
 }));
 
 
@@ -100,6 +100,7 @@ app.get('/funfact', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
+
 
 
 
