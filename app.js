@@ -46,7 +46,7 @@ app.get('/funfact', async (req, res) => {
         contents: [
           {
             parts: [
-              { text: `Give me 5 short ${theme} fun facts, numbered.` }
+              { text: `Give me 1 short ${theme} fun facts, numbered.` }
             ]
           }
         ],
@@ -100,6 +100,7 @@ app.get('/funfact', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
+
 
 
 
