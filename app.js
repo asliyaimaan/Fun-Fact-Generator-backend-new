@@ -51,9 +51,11 @@ app.get('/funfact', async (req, res) => {
           }
         ],
         generationConfig: {
-          temperature: 0.7, //Control randomness
-          maxOutputTokens: 500 //Limit the response length
-        }
+            temperature: 1.5,       // no randomness
+            maxOutputTokens: 200, // control length
+            topP: 1,              // disable nucleus sampling randomness
+            topK: 1               // pick most likely next token each time
+      }
       },
       {
         headers: {
@@ -98,6 +100,7 @@ app.get('/funfact', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
+
 
 
 
