@@ -1,15 +1,13 @@
-//Loading the dependencies
-require('dotenv').config(); //Load API key from .env
+// Loading the dependencies
+require('dotenv').config(); // Load API key from .env
 const express = require('express');
 const axios = require('axios');
 const path = require('path');
+const cors = require('cors');
 const app = express();
 const PORT = 3000;
 
 // ✅ Define allowed origins
-const cors = require('cors');
-
-// ✅ Allow only these URLs
 const allowedOrigins = [
   'https://funfactgenerator123.netlify.app',
   'https://cardgenerator123.netlify.app'
@@ -17,45 +15,45 @@ const allowedOrigins = [
 
 // ✅ Simple CORS setup
 app.use(cors({
-  origin: allowedOrigins, methods: ['GET', 'POST']
+  origin: allowedOrigins,
+  methods: ['GET', 'POST']
 }));
-
 
 // ✅ Serve static frontend files from "public" folder
 app.use(express.static(path.join(__dirname, 'public')));
 
-//Defining a route using express
+// ✅ Define the /funfact route
 app.get('/funfact', async (req, res) => {
   try {
-    //Read theme from query string, default to "random" if not provided
-    let theme = (req.query.theme || 'random').toLowerCase();
+    // Read theme from query string, default to "random" if not provided
+    const theme = (req.query.theme || 'random').toLowerCase();
 
-    //Load API key from .env
+    // Load API key from .env
     const apiKey = process.env.API_KEY;
     if (!apiKey) {
       throw new Error("API_KEY not found in .env file.");
     }
 
-    //Correct Gemini API endpoint for generateContent
+    // Correct Gemini API endpoint
     const endpoint = `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
-    // Send the request to gemini
+    // Send request to Gemini (only 1 fun fact, no numbering or intro)
     const response = await axios.post(
       endpoint,
       {
         contents: [
           {
             parts: [
-              { text: `Give me 1 short ${theme} fun facts, numbered.` }
+              { text: `Give me 1 short fun fact about ${theme}. Do not include introductions or numbering.` }
             ]
           }
         ],
         generationConfig: {
-            temperature: 1.5,       // no randomness
-            maxOutputTokens: 200, // control length
-            topP: 1,              // disable nucleus sampling randomness
-            topK: 1               // pick most likely next token each time
-      }
+          temperature: 1.2,      // adds slight creativity
+          maxOutputTokens: 100,  // limit length
+          topP: 1,
+          topK: 1
+        }
       },
       {
         headers: {
@@ -64,39 +62,24 @@ app.get('/funfact', async (req, res) => {
       }
     );
 
-    //Extract the actual text content from the complex JSON response
-    const rawText = response.data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    console.log("Raw text from API:", rawText);
+    // ✅ Extract the actual text content from Gemini's response
+    const fact = response.data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
 
-    //Split by numbered items. The first item will be the intro
-    let facts = rawText
-      .split(/(?:\r?\n|^)\s*\d+\.\s*/)
-      .map(f => f.trim());
+    console.log("Fun Fact from API:", fact);
 
-    //Remove the first element which is the intro
-    facts.shift();
+    // ✅ Fallback if Gemini returns empty text
+    const finalFact = fact.length > 5 ? fact : `No fun fact found for ${theme}. Please try again.`;
 
-    //Ensure we only keep valid, non-empty facts, up to 5.
-    facts = facts
-      .filter(f => f.length > 5)
-      .slice(0, 5);
+    // ✅ Send JSON back to frontend
+    res.json({ theme, fact: finalFact });
 
-    console.log("Processed facts (after shift):", facts);
-
-    //If fewer than 5 facts were parsed, provide fallback
-    if (facts.length === 0) {
-      facts.push(`No facts found for ${theme}. Please try again.`);
-    }
-
-    //Send JSON back to frontend
-    res.json({ theme, facts });
   } catch (error) {
     console.error('Error fetching fun fact:', error.response?.data || error.message);
-    res.status(500).json({ error: 'Failed to fetch fun facts' });
+    res.status(500).json({ error: 'Failed to fetch fun fact' });
   }
 });
 
-//Server Listener
+// ✅ Server Listener
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
