@@ -9,7 +9,7 @@ const PORT = 3000;
 
 // ✅ Define allowed origins
 const allowedOrigins = [
-  'https://funfactgenerator123.netlify.app',
+  'https://funfactgenerator123.netlify.app','https://funfactgenerator456.netlify.app',
   'https://cardgenerator123.netlify.app'
 ];
 
