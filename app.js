@@ -49,7 +49,7 @@ app.get('/funfact', async (req, res) => {
           }
         ],
         generationConfig: {
-          temperature: 1.2,      // adds slight creativity
+          temperature: 1.5,      // controls creativity
           maxOutputTokens: 100,  // limit length
           topP: 1,
           topK: 1
@@ -83,6 +83,8 @@ app.get('/funfact', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
+
+
 
 
 
